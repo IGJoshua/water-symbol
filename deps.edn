@@ -1,0 +1,45 @@
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.10.2"}
+        org.suskalo/farolero {:mvn/version "1.0.0-RC2"}
+        IGJoshua/s-expresso {:git/url "https://github.com/IGJoshua/s-expresso"
+                             :sha "c18b805a25b3b589f1e26cf652485afc6c16a276"}
+
+        net.mikera/core.matrix {:mvn/version "0.62.0"}
+        net.mikera/vectorz-clj {:mvn/version "0.48.0"}
+
+        org.lwjgl/lwjgl {:mvn/version "3.2.3"}
+        org.lwjgl/lwjgl-opengl {:mvn/version "3.2.3"}}
+ :aliases
+ {:linux {:extra-deps {org.lwjgl/lwjgl$natives-linux {:mvn/version "3.2.3"}
+                       org.lwjgl/lwjgl-glfw$natives-linux {:mvn/version "3.2.3"}
+                       org.lwjgl/lwjgl-opengl$natives-linux {:mvn/version "3.2.3"}
+                       org.lwjgl/lwjgl-openal$natives-linux {:mvn/version "3.2.3"}
+                       org.lwjgl/lwjgl-stb$natives-linux {:mvn/version "3.2.3"}}}
+  :windows {:extra-deps {org.lwjgl/lwjgl$natives-windows {:mvn/version "3.2.3"}
+                         org.lwjgl/lwjgl-glfw$natives-windows {:mvn/version "3.2.3"}
+                         org.lwjgl/lwjgl-opengl$natives-windows {:mvn/version "3.2.3"}
+                         org.lwjgl/lwjgl-openal$natives-windows {:mvn/version "3.2.3"}
+                         org.lwjgl/lwjgl-stb$natives-windows {:mvn/version "3.2.3"}}}
+  :dev {:extra-paths ["dev"]}
+  :test {:extra-paths ["test"]
+         :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}}}
+  :runner
+  {:extra-deps {com.cognitect/test-runner
+                {:git/url "https://github.com/cognitect-labs/test-runner"
+                 :sha "b6b3193fcc42659d7e46ecd1884a228993441182"}}
+   :main-opts ["-m" "cognitect.test-runner"
+               "-d" "test"]}
+  :linux/uberjar {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.193"}}
+                  :exec-fn hf.depstar/uberjar
+                  :exec-args {:aot true
+                              :jar "water-symbol-linux.jar"
+                              :main-class "water-symbol.core"
+                              :sync-pom true
+                              :aliases [:linux]}}
+  :windows/uberjar {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.193"}}
+                    :exec-fn hf.depstar/uberjar
+                    :exec-args {:aot true
+                                :jar "water-symbol-windows.jar"
+                                :main-class "water-symbol.core"
+                                :sync-pom true
+                                :aliases [:windows]}}}}

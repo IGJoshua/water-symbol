@@ -2,7 +2,7 @@
  :deps {org.clojure/clojure {:mvn/version "1.10.2"}
         org.suskalo/farolero {:mvn/version "1.0.0-RC2"}
         IGJoshua/s-expresso {:git/url "https://github.com/IGJoshua/s-expresso"
-                             :sha "c18b805a25b3b589f1e26cf652485afc6c16a276"}
+                             :sha "3b2aa2a9409183a4daa8e2cb47bb550121fd488c"}
 
         net.mikera/core.matrix {:mvn/version "0.62.0"}
         net.mikera/vectorz-clj {:mvn/version "0.48.0"}

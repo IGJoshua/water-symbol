@@ -9,6 +9,7 @@
   (:gen-class))
 
 (defonce input (atom {}))
+(defonce recompile-queue (atom []))
 
 (defn set-close
   [window]
@@ -42,8 +43,24 @@
         (assoc state ::se/should-close? true))
     state))
 
+(defn resolve-recompile-queue
+  [state dt]
+  (doseq [event (first (reset-vals! recompile-queue []))]
+    (se/send-render-event! event))
+  state)
+
+(def ^:private debugger-lock (atom false))
+
+(defn await-debugger
+  [state dt]
+  (locking debugger-lock
+    (when @debugger-lock
+      (.wait debugger-lock)
+      (.notify debugger-lock)))
+  state)
+
 (def init-game-state
-  {::ecs/systems [#'resolve-input]
+  {::ecs/systems [#'resolve-input #'resolve-recompile-queue #'await-debugger]
    ::ecs/entities {}
    ::ecs/events []
    ::se/event-handler #'render-event-handler
@@ -53,14 +70,28 @@
   {::r/resolvers {}
    ::r/resources {}})
 
+(defn blocking-debugger
+  [condition hook]
+  (locking debugger-lock
+    (reset! debugger-lock true))
+  (try
+    (far/system-debugger condition hook)
+    (finally
+      (when (every? (fnil zero? 0) (map second @#'far/*debugger-level*))
+        (locking debugger-lock
+          (reset! debugger-lock false)
+          (.notify debugger-lock)
+          (.wait debugger-lock))))))
+
 (defn run
   []
-  (with-free [window (wnd/make-window window-opts)]
-    (wnd/show-window window)
-    (se/start-engine window
-                     init-game-state
-                     init-render-state
-                     (/ 60))))
+  (binding [far/*system-debugger* blocking-debugger]
+    (with-free [window (wnd/make-window window-opts)]
+      (wnd/show-window window)
+      (se/start-engine window
+                       init-game-state
+                       init-render-state
+                       (/ 60)))))
 
 (defn -main
   [& args]

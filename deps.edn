@@ -1,6 +1,6 @@
 {:paths ["src" "resources"]
  :deps {org.clojure/clojure {:mvn/version "1.10.2"}
-        org.suskalo/farolero {:mvn/version "1.0.0-RC2"}
+        org.suskalo/farolero {:mvn/version "1.0.0-RC3"}
         com.taoensso/timbre {:mvn/version "4.10.0"}
 
         IGJoshua/s-expresso {:git/url "https://github.com/IGJoshua/s-expresso"
